@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lab5 - Exercise 3</title>
+</head>
+<body>
+    <input type="text" id="textInput" placeholder="Type something here..."/>
+    <label id="textLabel"></label>
+    <button id="redButton">Red</button>
+    <button id="blueButton">Blue</button>
+    <button id="greenButton">Green</button>
+    <button id="orangeButton">Orange</button>
+    <button id="purpleButton">Purple</button>
+</body>
+<script type="text/javascript">
+
+const textInput = document.getElementById('textInput');
+const textLabel = document.getElementById('textLabel');
+
+async function retrieveData() {
+        try {
+            const response = await fetch('https://67c28e461851890165aca325.mockapi.io/users_api');
+            return await response.json(); 
+        } catch (error) {
+            console.log("Error fetching data");
+            return []; 
+        }
+    }
+
+    textInput.addEventListener('keypress', async (event) => { 
+    if (event.key === 'Enter') {
+        const data = await retrieveData(); 
+        const userId = textInput.value.trim();
+        let foundUser = null; 
+
+    
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id == userId) {
+                foundUser = data[i];
+                break; 
+            }
+        }
+
+        if (foundUser) {
+            textLabel.textContent = `ID: ${foundUser.id}, Name: ${foundUser.first_name}, Group: ${foundUser.user_group}`;
+        } else {
+            textLabel.textContent = "No users were found with the provided User_ID.";
+        }
+
+        textInput.value = ''; 
+    }
+});
+
+
+const colorButtons = [
+    { id: 'redButton', color: 'red' },
+    { id: 'blueButton', color: 'blue' },
+    { id: 'greenButton', color: 'green' },
+    { id: 'orangeButton', color: 'orange' },
+    { id: 'purpleButton', color: 'purple' }
+];
+
+colorButtons.forEach(btnConfig => {
+    const button = document.getElementById(btnConfig.id);
+    button.addEventListener('click', () => {
+        textLabel.style.color = btnConfig.color;
+    });
+});
+
+
+</script>
+</html>
